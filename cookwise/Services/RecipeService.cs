@@ -8,8 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using cookwise.Models;
 
-namespace cookwise.Services
-{
+namespace cookwise.Services;
     public class RecipeService
     {
         private static RecipeService? _instance;
@@ -685,15 +684,14 @@ namespace cookwise.Services
         }
 
         private class ApiIngredient
-        {
-            [JsonPropertyName("name")]
-            public string Name { get; set; } = "";
-            
-            [JsonPropertyName("amount")]
-            public double? Amount { get; set; }
-            
-            [JsonPropertyName("unit")]
-            public string? Unit { get; set; }
-        }
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = "";
+        
+        [JsonPropertyName("amount")]
+        public double? Amount { get; set; }
+        
+        [JsonPropertyName("unit")]
+        public string? Unit { get; set; }
     }
 }

@@ -41,4 +41,37 @@
     <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+
+    <!-- CookWise Brand Colors -->
+    <Color x:Key="BrandPrimary">#FF6B35</Color>
+    <Color x:Key="BrandPrimaryDark">#E65100</Color>
+    <Color x:Key="BrandPrimaryLight">#FFF3E0</Color>
+    <Color x:Key="BrandBackground">#F8F4E9</Color>
+    <Color x:Key="BrandCardBackground">#F5F5F5</Color>
+
+    <!-- Semantic Colors -->
+    <Color x:Key="Success">#4CAF50</Color>
+    <Color x:Key="SuccessLight">#E8F5E9</Color>
+    <Color x:Key="Danger">#D32F2F</Color>
+    <Color x:Key="Info">#1565C0</Color>
+    <Color x:Key="InfoLight">#E3F2FD</Color>
+    <Color x:Key="SecondaryText">#9C27B0</Color>
+    <Color x:Key="Muted">#FCE4EC</Color>
+    <Color x:Key="Accent">#AD1457</Color>
+
+    <!-- Text Colors -->
+    <Color x:Key="TextPrimary">#5D4037</Color>
+    <Color x:Key="TextSecondary">#6D4C41</Color>
+    <Color x:Key="TextMuted">#8D6E63</Color>
+    <Color x:Key="TextPlaceholder">#BBB</Color>
+
+    <!-- Brush Resources -->
+    <SolidColorBrush x:Key="BrandPrimaryBrush" Color="{StaticResource BrandPrimary}"/>
+    <SolidColorBrush x:Key="BrandPrimaryDarkBrush" Color="{StaticResource BrandPrimaryDark}"/>
+    <SolidColorBrush x:Key="BrandPrimaryLightBrush" Color="{StaticResource BrandPrimaryLight}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success}"/>
+    <SolidColorBrush x:Key="SuccessLightBrush" Color="{StaticResource SuccessLight}"/>
+    <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource Danger}"/>
+    <SolidColorBrush x:Key="InfoBrush" Color="{StaticResource Info}"/>
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimary}"/>
 </ResourceDictionary>

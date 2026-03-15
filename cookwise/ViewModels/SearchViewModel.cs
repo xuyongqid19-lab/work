@@ -7,63 +7,61 @@ using CommunityToolkit.Mvvm.Input;
 using cookwise.Models;
 using cookwise.Services;
 
-namespace cookwise.ViewModels
-{
+namespace cookwise.ViewModels;
     public partial class SearchViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private string _ingredientInput = string.Empty;
+
+    [ObservableProperty]
+    private ObservableCollection<string> _selectedIngredients = new();
+
+    [ObservableProperty]
+    private ObservableCollection<SearchResult> _searchResults = new();
+
+    [RelayCommand]
+    private void AddIngredient()
     {
-        [ObservableProperty]
-        private string _ingredientInput = string.Empty;
-
-        [ObservableProperty]
-        private ObservableCollection<string> _selectedIngredients = new();
-
-        [ObservableProperty]
-        private ObservableCollection<SearchResult> _searchResults = new();
-
-        [RelayCommand]
-        private void AddIngredient()
+        if (!string.IsNullOrWhiteSpace(IngredientInput))
         {
-            if (!string.IsNullOrWhiteSpace(IngredientInput))
+            var ingredients = IngredientInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(i => i.Trim())
+                .Where(i => !SelectedIngredients.Contains(i));
+            
+            foreach (var ing in ingredients)
             {
-                var ingredients = IngredientInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(i => i.Trim())
-                    .Where(i => !SelectedIngredients.Contains(i));
-                
-                foreach (var ing in ingredients)
-                {
-                    SelectedIngredients.Add(ing);
-                }
-                IngredientInput = string.Empty;
+                SelectedIngredients.Add(ing);
             }
+            IngredientInput = string.Empty;
         }
+    }
 
-        [RelayCommand]
-        private void RemoveIngredient(string ingredient)
+    [RelayCommand]
+    private void RemoveIngredient(string ingredient)
+    {
+        if (SelectedIngredients.Contains(ingredient))
         {
-            if (SelectedIngredients.Contains(ingredient))
-            {
-                SelectedIngredients.Remove(ingredient);
-            }
+            SelectedIngredients.Remove(ingredient);
         }
+    }
 
-        [RelayCommand]
-        private async Task Search()
+    [RelayCommand]
+    private async Task Search()
+    {
+        if (!SelectedIngredients.Any())
+            return;
+
+        var service = RecipeService.Instance;
+        var results = await service.SearchByIngredientsAsync(SelectedIngredients.ToList());
+        SearchResults = new ObservableCollection<SearchResult>(results);
+    }
+
+    [RelayCommand]
+    private async Task ViewRecipe(Recipe recipe)
+    {
+        if (recipe != null)
         {
-            if (!SelectedIngredients.Any())
-                return;
-
-            var service = RecipeService.Instance;
-            var results = await service.SearchByIngredientsAsync(SelectedIngredients.ToList());
-            SearchResults = new ObservableCollection<SearchResult>(results);
-        }
-
-        [RelayCommand]
-        private async Task ViewRecipe(Recipe recipe)
-        {
-            if (recipe != null)
-            {
-                await Shell.Current.GoToAsync($"//RecipeDetailPage?recipeId={recipe.Id}");
-            }
+            await Shell.Current.GoToAsync($"//RecipeDetailPage?recipeId={recipe.Id}");
         }
     }
 }
