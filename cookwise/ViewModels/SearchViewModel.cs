@@ -19,6 +19,22 @@ namespace cookwise.ViewModels;
     [ObservableProperty]
     private ObservableCollection<SearchResult> _searchResults = new();
 
+    // AI 生成菜品相关属性
+    [ObservableProperty]
+    private string _aiIngredientInput = string.Empty;
+
+    [ObservableProperty]
+    private bool _isGenerating = false;
+
+    [ObservableProperty]
+    private ObservableCollection<Recipe> _generatedRecipes = new();
+
+    [ObservableProperty]
+    private bool _hasGeneratedResults = false;
+
+    [ObservableProperty]
+    private string _generateStatusText = string.Empty;
+
     [RelayCommand]
     private void AddIngredient()
     {
@@ -57,11 +73,43 @@ namespace cookwise.ViewModels;
     }
 
     [RelayCommand]
+    private async Task GenerateRecipes()
+    {
+        if (string.IsNullOrWhiteSpace(AiIngredientInput))
+            return;
+
+        IsGenerating = true;
+        HasGeneratedResults = false;
+        GenerateStatusText = "AI 正在为您生成菜品...";
+        GeneratedRecipes.Clear();
+
+        try
+        {
+            var service = RecipeService.Instance;
+            var recipes = await service.GenerateRecipesByIngredientAsync(AiIngredientInput.Trim());
+            
+            GeneratedRecipes = new ObservableCollection<Recipe>(recipes);
+            HasGeneratedResults = GeneratedRecipes.Any();
+            GenerateStatusText = HasGeneratedResults
+                ? $"为「{AiIngredientInput}」找到 {GeneratedRecipes.Count} 道推荐菜品"
+                : $"暂无与「{AiIngredientInput}」相关的菜品，试试其他食材吧";
+        }
+        catch (Exception ex)
+        {
+            GenerateStatusText = $"生成失败：{ex.Message}";
+        }
+        finally
+        {
+            IsGenerating = false;
+        }
+    }
+
+    [RelayCommand]
     private async Task ViewRecipe(Recipe recipe)
     {
         if (recipe != null)
         {
-            await Shell.Current.GoToAsync($"//RecipeDetailPage?recipeId={recipe.Id}");
+            await Shell.Current.GoToAsync($"RecipeDetailPage?recipeId={recipe.Id}");
         }
     }
 }

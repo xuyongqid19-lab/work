@@ -15,6 +15,8 @@ namespace cookwise.ViewModels;
     [ObservableProperty]
     private ObservableCollection<UserNote> _userNotes = new();
 
+    public bool IsNotesEmpty => UserNotes.Count == 0;
+
     public NoteViewModel()
     {
         LoadNotes();
@@ -37,10 +39,21 @@ namespace cookwise.ViewModels;
         NewNote.Id = Guid.NewGuid().ToString();
         NewNote.CreatedAt = DateTime.Now;
         await service.SaveUserNoteAsync(NewNote);
-        
-        LoadNotes();
-        
+
+        // 直接插入列表顶部，无需重新加载
+        UserNotes.Insert(0, NewNote);
+
         NewNote = new UserNote();
+    }
+
+    [RelayCommand]
+    private async Task DeleteNote(UserNote note)
+    {
+        if (note == null) return;
+
+        var service = RecipeService.Instance;
+        await service.DeleteUserNoteAsync(note.Id);
+        UserNotes.Remove(note);
     }
 
     [RelayCommand]
@@ -50,7 +63,7 @@ namespace cookwise.ViewModels;
         var profile = await service.GetFlavorProfileAsync();
         
         var preferences = string.Join(", ", profile.TastePreferences.Keys);
-        await Shell.Current.DisplayAlert("口味画像", 
-            $"您的口味偏好: {preferences}\n\n基于您的记录，系统将为您推荐更合适的菜谱。", "确定");
+        await Shell.Current.DisplayAlert("Flavor Profile", 
+            $"您的口味偏好: {preferences}\n\n基于您的记录，系统将为您推荐更合适的菜谱。", "OK");
     }
 }

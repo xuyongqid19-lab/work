@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:cookwise.ViewModels"
              x:Class="cookwise.Views.HomePage"
+             x:Name="HomePageRoot"
              Title="CookWise">
     <ContentPage.BindingContext>
         <vm:HomeViewModel />
@@ -12,8 +13,57 @@
         <VerticalStackLayout Padding="20" Spacing="20">
             <VerticalStackLayout Spacing="5">
                 <Label Text="CookWise" FontSize="32" FontAttributes="Bold" TextColor="#FF6B35"/>
-                <Label Text="精准化烹饪实验室" FontSize="16" TextColor="Gray"/>
+                <Label Text="Precision Cooking Laboratory" FontSize="16" TextColor="Gray"/>
             </VerticalStackLayout>
+
+            <!-- 数据来源指示器 -->
+            <Frame BackgroundColor="#E3F2FD" Padding="10" CornerRadius="8" HasShadow="False"
+                   IsVisible="{Binding DataSourceIndicator, Converter={StaticResource StringToBoolConverter}}">
+                <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <Label Text="{Binding DataSourceIndicator}" 
+                           FontSize="13" 
+                           FontAttributes="Bold"
+                           TextColor="#1565C0"
+                           HorizontalOptions="Center"/>
+                    <Label Text="•" TextColor="#90CAF9" VerticalOptions="Center"/>
+                    <Label Text="TheMealDB API" 
+                           FontSize="11" 
+                           TextColor="#64B5F6"
+                           TextDecorations="Underline">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnApiLinkTapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+            </Frame>
+            
+            <!-- 加载状态 -->
+            <VerticalStackLayout IsVisible="{Binding IsLoading}" 
+                                Spacing="10" 
+                                HorizontalOptions="Center"
+                                Padding="0,20,0,0">
+                <ActivityIndicator IsRunning="True" 
+                                   Color="#FF6B35" 
+                                   HeightRequest="40" 
+                                   WidthRequest="40"
+                                   HorizontalOptions="Center"/>
+                <Label Text="正在从 API 获取菜谱..." 
+                       FontSize="14" 
+                       TextColor="Gray"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+            
+            <!-- 状态消息 -->
+            <Frame BackgroundColor="#FFF3E0" 
+                   Padding="10" 
+                   CornerRadius="8" 
+                   HasShadow="False"
+                   IsVisible="{Binding StatusMessage, Converter={StaticResource StringToBoolConverter}}">
+                <Label Text="{Binding StatusMessage}" 
+                       FontSize="12" 
+                       TextColor="#E65100"
+                       HorizontalOptions="Center"/>
+            </Frame>
 
             <Frame BackgroundColor="#E8F5E9" Padding="15">
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="30">
@@ -29,7 +79,7 @@
                 </HorizontalStackLayout>
             </Frame>
 
-            <Label Text="快捷操作" FontSize="18" FontAttributes="Bold"/>
+            <Label Text="Quick Actions" FontSize="18" FontAttributes="Bold"/>
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                 <Button Text="Search" 
                         BackgroundColor="#FFF3E0" 
@@ -48,8 +98,8 @@
                         Command="{Binding ProfileCommand}"/>
             </Grid>
 
-            <Label Text="精选菜谱" FontSize="18" FontAttributes="Bold"/>
-            <CollectionView ItemsSource="{Binding FeaturedRecipes}" HeightRequest="180">
+            <Label Text="Featured Recipes (from API)" FontSize="18" FontAttributes="Bold"/>
+            <CollectionView ItemsSource="{Binding FeaturedRecipes}" HeightRequest="180" SelectionMode="Single" SelectedItem="{Binding SelectedRecipe}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15"/>
                 </CollectionView.ItemsLayout>
@@ -57,8 +107,11 @@
                     <DataTemplate>
                         <Frame BackgroundColor="White" WidthRequest="150" Padding="10">
                             <VerticalStackLayout>
-                                <Frame BackgroundColor="#FF6B35" HeightRequest="80">
-                                    <Label Text="Food" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Frame Padding="0" CornerRadius="15" HeightRequest="100" HasShadow="False" 
+                                       BackgroundColor="#FFE4B5" BorderColor="Transparent">
+                                    <Label Text="{Binding Name, Converter={StaticResource FirstCharConverter}}" 
+                                           FontSize="36" FontAttributes="Bold" TextColor="#FF6B35"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
                                 </Frame>
                                 <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold" Margin="0,8,0,2"/>
                                 <Label Text="{Binding Description}" FontSize="10" TextColor="Gray" MaxLines="2"/>
@@ -69,22 +122,25 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Label Text="全部菜谱" FontSize="18" FontAttributes="Bold"/>
-            <CollectionView ItemsSource="{Binding AllRecipes}">
+            <Label Text="All Recipes" FontSize="18" FontAttributes="Bold"/>
+            <CollectionView ItemsSource="{Binding AllRecipes}" SelectionMode="Single" SelectedItem="{Binding SelectedRecipe}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame BackgroundColor="White" Padding="15">
-                            <Grid ColumnDefinitions="60,*,Auto">
-                                <Frame BackgroundColor="#FFF3E0" WidthRequest="50" HeightRequest="50" Grid.Column="0">
-                                    <Label Text="Food" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            <Grid ColumnDefinitions="80,*,Auto" ColumnSpacing="15">
+                                <Frame Padding="0" CornerRadius="10" WidthRequest="80" HeightRequest="80" Grid.Column="0" 
+                                       HasShadow="False" BackgroundColor="#FFE4B5" BorderColor="Transparent">
+                                    <Label Text="{Binding Name, Converter={StaticResource FirstCharConverter}}" 
+                                           FontSize="28" FontAttributes="Bold" TextColor="#FF6B35"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
                                 </Frame>
                                 <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
                                     <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>
                                     <Label Text="{Binding Description}" FontSize="12" TextColor="Gray"/>
-                                    <Label Text="{Binding Servings, StringFormat='{0}人份'}" FontSize="10" TextColor="Gray"/>
+                                    <Label Text="{Binding Servings, StringFormat='{0} Servings'}" FontSize="10" TextColor="Gray"/>
                                 </VerticalStackLayout>
                                 <Label Text=">" FontSize="20" TextColor="Gray" Grid.Column="2" VerticalOptions="Center"/>
                             </Grid>

@@ -9,7 +9,9 @@ public class Recipe
     public List<CookingStep> Steps { get; set; } = new();
     public int Servings { get; set; } = 1;
     public double EstimatedCost { get; set; }
-    public string ImageUrl { get; set; } = string.Empty;
+    public string ImageUrl { get; set; } = "https://pic1.imgdb.cn/item/67e8a7a088c538a9b5bc4b5a.png";
+    public string CookingTime { get; set; } = "30 mins";
+    public int Calories { get; set; } = 300;
     public List<string> CategoryTags { get; set; } = new();
     public bool IsCustom { get; set; }
     public string? ParentRecipeId { get; set; }

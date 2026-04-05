@@ -6,13 +6,13 @@
     xmlns:views="clr-namespace:cookwise.Views"
     Title="CookWise">
 
-    <FlyoutItem Title="首页" Icon="house">
+    <FlyoutItem Title="Home" Icon="house">
         <ShellContent ContentTemplate="{DataTemplate views:HomePage}" Route="HomePage" />
     </FlyoutItem>
-    <FlyoutItem Title="搜索" Icon="search">
+    <FlyoutItem Title="Search" Icon="search">
         <ShellContent ContentTemplate="{DataTemplate views:SearchPage}" Route="SearchPage" />
     </FlyoutItem>
-    <FlyoutItem Title="笔记" Icon="note">
+    <FlyoutItem Title="Notes" Icon="note">
         <ShellContent ContentTemplate="{DataTemplate views:NotePage}" Route="NotePage" />
     </FlyoutItem>
 

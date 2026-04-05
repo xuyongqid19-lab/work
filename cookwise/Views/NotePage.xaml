@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:cookwise.ViewModels"
              x:Class="cookwise.Views.NotePage"
+             x:Name="ThisPage"
              Title="Notes">
     <ContentPage.BindingContext>
         <vm:NoteViewModel />
@@ -13,38 +14,101 @@
             <Label Text="Taste Notes" FontSize="24" FontAttributes="Bold" TextColor="#FF6B35"/>
             <Label Text="Record your cooking experience" FontSize="14" TextColor="Gray"/>
 
-            <Frame BackgroundColor="#F5F5F5" Padding="15">
+            <!-- 添加笔记 -->
+            <Frame BackgroundColor="#F5F5F5" Padding="15" CornerRadius="12">
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Add Note" FontSize="16" FontAttributes="Bold"/>
-                    <Entry Placeholder="Recipe Name" Text="{Binding NewNote.RecipeName, Mode=TwoWay}"/>
-                    <Editor Placeholder="Notes" HeightRequest="80" Text="{Binding NewNote.AdjustmentsText, Mode=TwoWay}"/>
-                    <Button Text="Save" Command="{Binding SaveNoteCommand}" BackgroundColor="#4CAF50" TextColor="White"/>
+                    <Entry Placeholder="Recipe Name"
+                           Text="{Binding NewNote.RecipeName, Mode=TwoWay}"/>
+                    <Editor Placeholder="Notes / Adjustments"
+                            HeightRequest="80"
+                            Text="{Binding NewNote.AdjustmentsText, Mode=TwoWay}"/>
+                    <Button Text="Save Note"
+                            Command="{Binding SaveNoteCommand}"
+                            BackgroundColor="#4CAF50"
+                            TextColor="White"
+                            CornerRadius="8"/>
                 </VerticalStackLayout>
             </Frame>
 
-            <Label Text="My Notes" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0"/>
-            <CollectionView ItemsSource="{Binding UserNotes}" HeightRequest="300">
+            <!-- My Notes 标题 + 数量 -->
+            <HorizontalStackLayout Spacing="8" Margin="0,10,0,0">
+                <Label Text="My Notes" FontSize="18" FontAttributes="Bold"/>
+                <Frame BackgroundColor="#FF6B35" Padding="6,2" CornerRadius="10">
+                    <Label Text="{Binding UserNotes.Count}" FontSize="12" TextColor="White" VerticalOptions="Center"/>
+                </Frame>
+            </HorizontalStackLayout>
+
+            <!-- 无笔记时的提示 -->
+            <Label Text="暂无笔记，填写后点击 Save Note 保存"
+                   FontSize="14"
+                   TextColor="#9E9E9E"
+                   HorizontalOptions="Center"
+                   Margin="0,10,0,10"
+                   IsVisible="{Binding IsNotesEmpty}"/>
+
+            <!-- 笔记列表 -->
+            <CollectionView ItemsSource="{Binding UserNotes}"
+                            SelectionMode="None">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame BackgroundColor="White" Padding="12">
-                            <VerticalStackLayout Spacing="5">
-                                <Label Text="{Binding RecipeName}" FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding AdjustmentsText}" FontSize="12" TextColor="Gray"/>
+                        <Frame BackgroundColor="White" Padding="14" CornerRadius="10"
+                               BorderColor="#E0E0E0" Margin="0,2">
+                            <VerticalStackLayout Spacing="6">
+
+                                <!-- 第一行：菜名 + 删除按钮 -->
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding RecipeName}"
+                                           FontSize="16" FontAttributes="Bold"
+                                           TextColor="#212121"
+                                           VerticalOptions="Center"/>
+                                    <Button Grid.Column="1"
+                                            Text="删除"
+                                            FontSize="13"
+                                            BackgroundColor="#EF5350"
+                                            TextColor="White"
+                                            CornerRadius="6"
+                                            HeightRequest="34"
+                                            WidthRequest="54"
+                                            Padding="0"
+                                            VerticalOptions="Center"
+                                            Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.DeleteNoteCommand}"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+
+                                <!-- 笔记内容 -->
+                                <Label Text="{Binding AdjustmentsText}"
+                                       FontSize="13"
+                                       TextColor="#616161"
+                                       LineBreakMode="WordWrap"/>
+
+                                <!-- 时间 -->
+                                <Label Text="{Binding CreatedAt, StringFormat='{0:MM/dd HH:mm}'}"
+                                       FontSize="11"
+                                       TextColor="#BDBDBD"/>
+
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Frame BackgroundColor="#FFF3E0" Padding="15">
+            <!-- Flavor Profile -->
+            <Frame BackgroundColor="#FFF3E0" Padding="15" CornerRadius="12" Margin="0,10,0,0">
                 <VerticalStackLayout>
                     <Label Text="Flavor Profile" FontSize="18" FontAttributes="Bold" TextColor="#E65100"/>
-                    <Button Text="View Profile" Command="{Binding ViewProfileCommand}" BackgroundColor="#FF6B35" TextColor="White"/>
+                    <Button Text="View Profile"
+                            Command="{Binding ViewProfileCommand}"
+                            BackgroundColor="#FF6B35"
+                            TextColor="White"
+                            CornerRadius="8"/>
                 </VerticalStackLayout>
             </Frame>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
