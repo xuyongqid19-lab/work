@@ -1,139 +1,155 @@
-<?xml version = "1.0" encoding = "UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="cookwise.Views.LoginPage"
              BackgroundColor="#F8F4E9">
-    <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header Section -->
+        <StackLayout Grid.Row="0" Padding="24,24,24,0" Spacing="4">
+            <!-- App Logo with Chef Hat Icon -->
+            <Frame CornerRadius="20" 
+                   Padding="12"
+                   HorizontalOptions="Center"
+                   HasShadow="True">
+                <Frame.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FF9800" Offset="0"/>
+                        <GradientStop Color="#FF5722" Offset="1"/>
+                    </LinearGradientBrush>
+                </Frame.Background>
+                <Label Text="👨‍🍳" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Frame>
             
-            <!-- Header Section -->
-            <StackLayout Grid.Row="0" Padding="24,24,24,0" Spacing="4">
-                <!-- App Logo with Chef Hat Icon -->
-                <Frame CornerRadius="20" 
-                       Padding="12"
-                       HorizontalOptions="Center"
-                       HasShadow="True">
-                    <Frame.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#FF9800" Offset="0"/>
-                            <GradientStop Color="#FF5722" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Frame.Background>
-                    <Label Text="👨‍🍳" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center"/>
-                </Frame>
-                
-                <!-- App Name -->
-                <Label Text="CookWise"
-                       FontSize="28"
+            <!-- App Name -->
+            <Label Text="CookWise"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="#5D4037"/>
+            
+            <!-- Welcome Text -->
+            <Label Text="Welcome to CookWise!"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="#6D4C41"/>
+            
+            <!-- Subtitle -->
+            <Label Text="Home-cooked Meals, Made Easy"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   TextColor="#8D6E63"/>
+        </StackLayout>
+        
+        <!-- Form Content -->
+        <StackLayout Grid.Row="1" Padding="24,0,24,24" Spacing="16" VerticalOptions="FillAndExpand">
+            <!-- Username Input -->
+            <StackLayout Spacing="4">
+                <Label Text="Username"
+                       FontSize="15"
                        FontAttributes="Bold"
-                       HorizontalOptions="Center"
                        TextColor="#5D4037"/>
+                <Frame CornerRadius="16" Padding="0" HasShadow="True">
+                    <Entry Placeholder="Username"
+                           PlaceholderColor="#BBB"
+                           TextColor="#5D4037"
+                           FontSize="16"
+                           BackgroundColor="White"/>
+                </Frame>
+            </StackLayout>
+            
+            <!-- Password Input -->
+            <StackLayout Spacing="4">
+                <Label Text="Password"
+                       FontSize="15"
+                       FontAttributes="Bold"
+                       TextColor="#5D4037"/>
+                <Frame CornerRadius="16" Padding="0" HasShadow="True">
+                    <Entry Placeholder="Password"
+                           PlaceholderColor="#BBB"
+                           TextColor="#5D4037"
+                           FontSize="16"
+                           IsPassword="True"
+                           BackgroundColor="White"/>
+                </Frame>
+            </StackLayout>
+            
+            <!-- Forgot Password Link -->
+            <Label Text="Forgot password?"
+                   FontSize="14"
+                   TextColor="#6D4C41"
+                   FontAttributes="Bold"
+                   HorizontalOptions="End">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnForgotPasswordTapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            
+            <!-- Buttons Section -->
+            <StackLayout Spacing="12">
+                <!-- Login Button -->
+                <Button Text="Login"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        CornerRadius="16"
+                        HeightRequest="56"
+                        BackgroundColor="#FF9800"
+                        Clicked="OnLoginClicked">
+                    <Button.Shadow>
+                        <Shadow Brush="#FF9800" Opacity="0.4" Radius="12" Offset="0,4"/>
+                    </Button.Shadow>
+                </Button>
                 
-                <!-- Welcome Text -->
-                <Label Text="Welcome to CookWise!"
+                <!-- Register Button -->
+                <Button Text="Register"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="#5D4037"
+                        CornerRadius="16"
+                        HeightRequest="56"
+                        BorderColor="#FF9800"
+                        BorderWidth="1.5"
+                        BackgroundColor="White"
+                        Clicked="OnRegisterClicked"/>
+                
+                <!-- Continue as Guest Button -->
+                <Button Text="Continue as Guest"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="#8D6E63"
+                        CornerRadius="16"
+                        HeightRequest="56"
+                        BackgroundColor="White"
+                        Clicked="OnContinueAsGuestClicked">
+                    <Button.Shadow>
+                        <Shadow Brush="#000000" Opacity="0.08" Radius="6" Offset="0,2"/>
+                    </Button.Shadow>
+                </Button>
+            </StackLayout>
+        </StackLayout>
+        
+        <!-- Loading Overlay -->
+        <Grid x:Name="LoadingOverlay"
+              BackgroundColor="#80000000"
+              IsVisible="False"
+              Grid.RowSpan="2">
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+                <ActivityIndicator IsRunning="True"
+                                   Color="#FF9800"
+                                   WidthRequest="50"
+                                   HeightRequest="50"/>
+                <Label Text="loading..."
                        FontSize="20"
                        FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       TextColor="#6D4C41"/>
-                
-                <!-- Subtitle -->
-                <Label Text="Home-cooked Meals, Made Easy"
-                       FontSize="16"
-                       HorizontalOptions="Center"
-                       TextColor="#8D6E63"/>
-            </StackLayout>
-            
-            <!-- Form Content -->
-            <StackLayout Grid.Row="1" Padding="24,0,24,24" Spacing="16" VerticalOptions="FillAndExpand">
-                <!-- Username Input -->
-                <StackLayout Spacing="4">
-                    <Label Text="Username"
-                           FontSize="15"
-                           FontAttributes="Bold"
-                           TextColor="#5D4037"/>
-                    <Frame CornerRadius="16" Padding="0" HasShadow="True">
-                        <Entry Placeholder="Username"
-                               PlaceholderColor="#BBB"
-                        TextColor="#5D4037"
-                                FontSize="16"
-                                BackgroundColor="White"/>
-                    </Frame>
-                </StackLayout>
-                
-                <!-- Password Input -->
-                <StackLayout Spacing="4">
-                    <Label Text="Password"
-                           FontSize="15"
-                           FontAttributes="Bold"
-                           TextColor="#5D4037"/>
-                    <Frame CornerRadius="16" Padding="0" HasShadow="True">
-                        <Entry Placeholder="Password"
-                               PlaceholderColor="#BBB"
-                               TextColor="#5D4037"
-                               FontSize="16"
-                                IsPassword="True"
-                                BackgroundColor="White"/>
-                    </Frame>
-                </StackLayout>
-                
-                    <!-- Forgot Password Link -->
-                    <Label Text="Forgot password?"
-                           FontSize="14"
-                           TextColor="#6D4C41"
-                           FontAttributes="Bold"
-                           HorizontalOptions="End">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnForgotPasswordTapped"/>
-                        </Label.GestureRecognizers>
-                    </Label>
-                
-                <!-- Buttons Section -->
-                <StackLayout Spacing="12">
-                    <!-- Login Button -->
-                    <Button Text="Login"
-                            FontSize="18"
-                            FontAttributes="Bold"
-                            TextColor="White"
-                            CornerRadius="16"
-                            HeightRequest="56"
-                            BackgroundColor="#FF9800"
-                            Clicked="OnLoginClicked">
-                        <Button.Shadow>
-                            <Shadow Brush="#FF9800" Opacity="0.4" Radius="12" Offset="0,4"/>
-                        </Button.Shadow>
-                    </Button>
-                    
-                    <!-- Register Button -->
-                    <Button Text="Register"
-                            FontSize="16"
-                            FontAttributes="Bold"
-                            TextColor="#5D4037"
-                            CornerRadius="16"
-                            HeightRequest="56"
-                            BorderColor="#FF9800"
-                            BorderWidth="1.5"
-                            BackgroundColor="White"
-                            Clicked="OnRegisterClicked"/>
-                    
-                    <!-- Continue as Guest Button -->
-                    <Button Text="Continue as Guest"
-                            FontSize="16"
-                            FontAttributes="Bold"
-                            TextColor="#8D6E63"
-                            CornerRadius="16"
-                            HeightRequest="56"
-                            BackgroundColor="White"
-                            Clicked="OnContinueAsGuestClicked">
-                        <Button.Shadow>
-                            <Shadow Brush="#000000" Opacity="0.08" Radius="6" Offset="0,2"/>
-                        </Button.Shadow>
-                    </Button>
-                </StackLayout>
-            </StackLayout>
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
         </Grid>
-    </ContentPage.Content>
+    </Grid>
 </ContentPage>

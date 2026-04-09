@@ -14,56 +14,7 @@
             <VerticalStackLayout Spacing="5">
                 <Label Text="CookWise" FontSize="32" FontAttributes="Bold" TextColor="#FF6B35"/>
                 <Label Text="Precision Cooking Laboratory" FontSize="16" TextColor="Gray"/>
-            </VerticalStackLayout>
-
-            <!-- 数据来源指示器 -->
-            <Frame BackgroundColor="#E3F2FD" Padding="10" CornerRadius="8" HasShadow="False"
-                   IsVisible="{Binding DataSourceIndicator, Converter={StaticResource StringToBoolConverter}}">
-                <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                    <Label Text="{Binding DataSourceIndicator}" 
-                           FontSize="13" 
-                           FontAttributes="Bold"
-                           TextColor="#1565C0"
-                           HorizontalOptions="Center"/>
-                    <Label Text="•" TextColor="#90CAF9" VerticalOptions="Center"/>
-                    <Label Text="TheMealDB API" 
-                           FontSize="11" 
-                           TextColor="#64B5F6"
-                           TextDecorations="Underline">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnApiLinkTapped"/>
-                        </Label.GestureRecognizers>
-                    </Label>
-                </HorizontalStackLayout>
-            </Frame>
-            
-            <!-- 加载状态 -->
-            <VerticalStackLayout IsVisible="{Binding IsLoading}" 
-                                Spacing="10" 
-                                HorizontalOptions="Center"
-                                Padding="0,20,0,0">
-                <ActivityIndicator IsRunning="True" 
-                                   Color="#FF6B35" 
-                                   HeightRequest="40" 
-                                   WidthRequest="40"
-                                   HorizontalOptions="Center"/>
-                <Label Text="正在从 API 获取菜谱..." 
-                       FontSize="14" 
-                       TextColor="Gray"
-                       HorizontalOptions="Center"/>
-            </VerticalStackLayout>
-            
-            <!-- 状态消息 -->
-            <Frame BackgroundColor="#FFF3E0" 
-                   Padding="10" 
-                   CornerRadius="8" 
-                   HasShadow="False"
-                   IsVisible="{Binding StatusMessage, Converter={StaticResource StringToBoolConverter}}">
-                <Label Text="{Binding StatusMessage}" 
-                       FontSize="12" 
-                       TextColor="#E65100"
-                       HorizontalOptions="Center"/>
-            </Frame>
+</VerticalStackLayout>
 
             <Frame BackgroundColor="#E8F5E9" Padding="15">
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="30">
@@ -98,7 +49,7 @@
                         Command="{Binding ProfileCommand}"/>
             </Grid>
 
-            <Label Text="Featured Recipes (from API)" FontSize="18" FontAttributes="Bold"/>
+            <Label Text="Featured Recipes" FontSize="18" FontAttributes="Bold"/>
             <CollectionView ItemsSource="{Binding FeaturedRecipes}" HeightRequest="180" SelectionMode="Single" SelectedItem="{Binding SelectedRecipe}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15"/>
@@ -109,9 +60,9 @@
                             <VerticalStackLayout>
                                 <Frame Padding="0" CornerRadius="15" HeightRequest="100" HasShadow="False" 
                                        BackgroundColor="#FFE4B5" BorderColor="Transparent">
-                                    <Label Text="{Binding Name, Converter={StaticResource FirstCharConverter}}" 
-                                           FontSize="36" FontAttributes="Bold" TextColor="#FF6B35"
-                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Image Source="{Binding ImageUrl}" 
+                                           Aspect="AspectFill"
+                                           HorizontalOptions="Fill" VerticalOptions="Fill"/>
                                 </Frame>
                                 <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold" Margin="0,8,0,2"/>
                                 <Label Text="{Binding Description}" FontSize="10" TextColor="Gray" MaxLines="2"/>
@@ -133,9 +84,9 @@
                             <Grid ColumnDefinitions="80,*,Auto" ColumnSpacing="15">
                                 <Frame Padding="0" CornerRadius="10" WidthRequest="80" HeightRequest="80" Grid.Column="0" 
                                        HasShadow="False" BackgroundColor="#FFE4B5" BorderColor="Transparent">
-                                    <Label Text="{Binding Name, Converter={StaticResource FirstCharConverter}}" 
-                                           FontSize="28" FontAttributes="Bold" TextColor="#FF6B35"
-                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Image Source="{Binding ImageUrl}" 
+                                           Aspect="AspectFill"
+                                           HorizontalOptions="Fill" VerticalOptions="Fill"/>
                                 </Frame>
                                 <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
                                     <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>

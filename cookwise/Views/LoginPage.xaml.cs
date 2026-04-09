@@ -9,29 +9,44 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
     }
 
-    private void OnLoginClicked(object sender, EventArgs e)
+    private async void OnLoginClicked(object sender, EventArgs e)
     {
-        // Navigate to home page (or wherever appropriate after login)
+        // Show loading overlay
+        LoadingOverlay.IsVisible = true;
+        
+        // Wait 2-3 seconds
+        await Task.Delay(2500);
+        
+        // Navigate to home page
         Application.Current.MainPage = new AppShell();
     }
 
-    private void OnRegisterClicked(object sender, EventArgs e)
+    private async void OnRegisterClicked(object sender, EventArgs e)
     {
-        // For now, navigate to home page as well
-        // In a real app, this might go to a registration page
+        // Show loading overlay
+        LoadingOverlay.IsVisible = true;
+        
+        // Wait 2-3 seconds
+        await Task.Delay(2500);
+        
+        // Navigate to home page
         Application.Current.MainPage = new AppShell();
     }
 
-    private void OnContinueAsGuestClicked(object sender, EventArgs e)
+    private async void OnContinueAsGuestClicked(object sender, EventArgs e)
     {
-        // Navigate to home page as guest
+        // Show loading overlay
+        LoadingOverlay.IsVisible = true;
+        
+        // Wait 2-3 seconds
+        await Task.Delay(2500);
+        
+        // Navigate to home page
         Application.Current.MainPage = new AppShell();
     }
 
     private void OnForgotPasswordTapped(object sender, EventArgs e)
     {
-        // Handle forgot password logic
-        // For now, just show a simple message or navigate to forgot password page
         DisplayAlert("Forgot Password", "Password reset instructions will be sent to your email.", "OK");
     }
 }

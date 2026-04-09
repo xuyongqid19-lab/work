@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using cookwise.Models;
 using cookwise.Services;
+using Plugin.LocalNotification;
 using Timer = System.Timers.Timer;
 
 namespace cookwise.ViewModels;
@@ -111,68 +112,81 @@ public partial class RecipeDetailViewModel : ObservableObject
         }
     }
 
-    private async void Timer_Elapsed(object? sender, ElapsedEventArgs e)
-    {
-        if (ActiveTimerSeconds > 0)
+private async void Timer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            ActiveTimerSeconds--;
-            UpdateTimerDisplay();
-            
-            // 最后10秒震动提醒
-            if (ActiveTimerSeconds <= WarningThresholdSeconds && ActiveTimerSeconds > 0)
+            if (ActiveTimerSeconds > 0)
             {
-                // 在主线程更新UI和触发震动
-                MainThread.BeginInvokeOnMainThread(async () =>
+                ActiveTimerSeconds--;
+                UpdateTimerDisplay();
+                
+                // 最后10秒震动提醒
+                if (ActiveTimerSeconds <= WarningThresholdSeconds && ActiveTimerSeconds > 0)
                 {
-                    IsCountdownWarning = true;
-                    TimerWarningText = $"⏱️ {ActiveTimerSeconds} 秒";
-                    
-                    // 每秒短震动
-                    if (!_hasVibratedForCurrentSecond)
+                    // 在主线程更新UI和触发震动
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        _hasVibratedForCurrentSecond = true;
-                        try
+                        IsCountdownWarning = true;
+                        TimerWarningText = $"⏱️ {ActiveTimerSeconds} 秒";
+                        
+                        // 每秒短震动
+                        if (!_hasVibratedForCurrentSecond)
                         {
-                            // 短震动 (100ms)
-                            Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
+                            _hasVibratedForCurrentSecond = true;
+                            try
+                            {
+                                // 短震动 (100ms)
+                                Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Vibration failed: {ex.Message}");
+                            }
                         }
-                        catch (Exception ex)
+                    });
+                    
+                    // 重置标志以便下一秒震动
+                    _hasVibratedForCurrentSecond = false;
+                }
+            }
+            else
+            {
+                // 计时结束 - 发送通知、震动提醒
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    IsCountdownWarning = false;
+                    TimerWarningText = "✅ 时间到！";
+                    
+                    // 发送本地通知
+                    var notification = new NotificationRequest
+                    {
+                        NotificationId = 1001,
+                        Title = "🍳 CookWise 计时器",
+                        Description = $"「{Recipe.Name}」烹饪步骤已完成！",
+                        Schedule = new NotificationRequestSchedule
                         {
-                            System.Diagnostics.Debug.WriteLine($"Vibration failed: {ex.Message}");
+                            NotifyTime = DateTime.Now
                         }
+                    };
+                    await LocalNotificationCenter.Current.Show(notification);
+                    
+                    try
+                    {
+                        // 长震动模式：震动3次，每次300ms，间隔200ms
+                        for (int i = 0; i < 3; i++)
+                        {
+                            Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(300));
+                            await Task.Delay(500);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Final vibration failed: {ex.Message}");
                     }
                 });
                 
-                // 重置标志以便下一秒震动
-                _hasVibratedForCurrentSecond = false;
+                StopTimer();
             }
         }
-        else
-        {
-            // 计时结束 - 长震动提醒
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
-                IsCountdownWarning = false;
-                TimerWarningText = "✅ 时间到！";
-                
-                try
-                {
-                    // 长震动模式：震动3次，每次300ms，间隔200ms
-                    for (int i = 0; i < 3; i++)
-                    {
-                        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(300));
-                        await Task.Delay(500);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Final vibration failed: {ex.Message}");
-                }
-            });
-            
-            StopTimer();
-        }
-    }
 
     private void UpdateTimerDisplay()
     {

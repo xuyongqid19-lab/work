@@ -14,10 +14,11 @@
         <ScrollView>
             <Grid RowDefinitions="300, *">
                 <!-- 2. Food Image Area -->
-                <Frame Grid.Row="0" BackgroundColor="#FFE4B5" Padding="0">
-                    <Label Text="{Binding Recipe.Name, Converter={StaticResource FirstCharConverter}}" 
-                           FontSize="72" FontAttributes="Bold" TextColor="#FF6B35"
-                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Frame Grid.Row="0" BackgroundColor="#FFE4B5" Padding="0" CornerRadius="0" HasShadow="False" BorderColor="Transparent">
+                    <Image Source="{Binding Recipe.ImageUrl}" 
+                           Aspect="AspectFill"
+                           HorizontalOptions="Fill" 
+                           VerticalOptions="Fill"/>
                 </Frame>
                 
                 <!-- Main Content Area with rounded top corners overlapping the image -->
