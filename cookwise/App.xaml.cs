@@ -17,10 +17,17 @@ public partial class App : Application
     {
         base.OnStart();
         
-        // Request notification permission
-        if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
+        // Request notification permission (wrap in try-catch to prevent crash)
+        try
         {
-            await LocalNotificationCenter.Current.RequestNotificationPermission();
+            if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
+            {
+                await LocalNotificationCenter.Current.RequestNotificationPermission();
+            }
+        }
+        catch (Exception)
+        {
+            // Notification permission denied or not supported - continue without notifications
         }
     }
 }

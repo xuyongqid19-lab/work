@@ -5,49 +5,72 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using cookwise.Models;
-using cookwise.Services;namespace cookwise.ViewModels;
-    public partial class HomeViewModel : ObservableObject
+using cookwise.Services;
+
+namespace cookwise.ViewModels;
+
+public partial class HomeViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private ObservableCollection<Recipe> _featuredRecipes = new();
+
+    [ObservableProperty]
+    private ObservableCollection<Recipe> _allRecipes = new();
+
+    [ObservableProperty]
+    private Recipe? _selectedRecipe;
+
+    [ObservableProperty]
+    private int _totalRecipes;
+
+    [ObservableProperty]
+    private int _totalIngredients;
+
+    [ObservableProperty]
+    private double _avgCost;
+
+    [ObservableProperty]
+    private int _avgCalories;
+
+    partial void OnSelectedRecipeChanged(Recipe? value)
     {
-        [ObservableProperty]
-        private ObservableCollection<Recipe> _featuredRecipes = new();
-
-        [ObservableProperty]
-        private ObservableCollection<Recipe> _allRecipes = new();
-
-        [ObservableProperty]
-        private Recipe? _selectedRecipe;
-
-        partial void OnSelectedRecipeChanged(Recipe? value)
+        if (value != null)
         {
-            if (value != null)
-            {
-                _ = GoToRecipeDetail(value);
-                SelectedRecipe = null; // clear selection so it can be clicked again
-            }
+            _ = GoToRecipeDetail(value);
+            SelectedRecipe = null;
         }
+    }
 
-        public HomeViewModel()
+    public HomeViewModel()
+    {
+        LoadRecipes();
+    }
+
+    private async void LoadRecipes()
+    {
+        var service = RecipeService.Instance;
+
+        try
         {
-            LoadRecipes();
-        }        private async void LoadRecipes()
-        {var service = RecipeService.Instance;
-            
-            try
-            {
-                // Only load local recipes
-                var recipes = await service.GetAllRecipesAsync();
-                AllRecipes = new ObservableCollection<Recipe>(recipes);
-                
-                // Set featured recipes (random selection from local data)
-                var random = new Random();
-                var featured = recipes.OrderBy(x => random.Next()).Take(3).ToList();
-                FeaturedRecipes = new ObservableCollection<Recipe>(featured);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Failed to load recipes: {ex.Message}");
-            }
+            var recipes = await service.GetAllRecipesAsync();
+            AllRecipes = new ObservableCollection<Recipe>(recipes);
+
+            // Calculate statistics from real data
+            TotalRecipes = recipes.Count;
+            TotalIngredients = recipes.Sum(r => r.Ingredients?.Count ?? 0);
+            AvgCost = recipes.Count > 0 ? Math.Round(recipes.Average(r => r.EstimatedCost), 2) : 0;
+            AvgCalories = recipes.Count > 0 ? (int)recipes.Average(r => r.Calories) : 0;
+
+            // Set featured recipes (random selection from local data)
+            var random = new Random();
+            var featured = recipes.OrderBy(x => random.Next()).Take(3).ToList();
+            FeaturedRecipes = new ObservableCollection<Recipe>(featured);
         }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to load recipes: {ex.Message}");
+        }
+    }
 
     [RelayCommand]
     private async Task Search()

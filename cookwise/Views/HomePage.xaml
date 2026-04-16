@@ -16,19 +16,26 @@
                 <Label Text="Precision Cooking Laboratory" FontSize="16" TextColor="Gray"/>
 </VerticalStackLayout>
 
-            <Frame BackgroundColor="#E8F5E9" Padding="15">
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="30">
-                    <VerticalStackLayout>
-                        <Label Text="Home" FontSize="10" TextColor="Green"/>
-                        <Label Text="$3-15" FontSize="14" FontAttributes="Bold" TextColor="Green"/>
+            <Border BackgroundColor="#E8F5E9" Padding="15" StrokeShape="RoundRectangle 8">
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                    <VerticalStackLayout HorizontalOptions="Center" Grid.Column="0">
+                        <Label Text="Recipes" FontSize="10" TextColor="#2E7D32" HorizontalOptions="Center"/>
+                        <Label Text="{Binding TotalRecipes, StringFormat='{0}'}" FontSize="20" FontAttributes="Bold" TextColor="#2E7D32" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
-                    <Label Text="VS" FontSize="20" TextColor="Gray" VerticalOptions="Center"/>
-                    <VerticalStackLayout>
-                        <Label Text="Delivery" FontSize="10" TextColor="Red"/>
-                        <Label Text="$12-25" FontSize="14" FontAttributes="Bold" TextColor="Red"/>
+                    <VerticalStackLayout HorizontalOptions="Center" Grid.Column="1">
+                        <Label Text="Ingredients" FontSize="10" TextColor="#1565C0" HorizontalOptions="Center"/>
+                        <Label Text="{Binding TotalIngredients, StringFormat='{0}'}" FontSize="20" FontAttributes="Bold" TextColor="#1565C0" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
-                </HorizontalStackLayout>
-            </Frame>
+                    <VerticalStackLayout HorizontalOptions="Center" Grid.Column="2">
+                        <Label Text="Avg Cost" FontSize="10" TextColor="#E65100" HorizontalOptions="Center"/>
+                        <Label Text="{Binding AvgCost, StringFormat='${0:F2}'}" FontSize="20" FontAttributes="Bold" TextColor="#E65100" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout HorizontalOptions="Center" Grid.Column="3">
+                        <Label Text="Avg Cal" FontSize="10" TextColor="#AD1457" HorizontalOptions="Center"/>
+                        <Label Text="{Binding AvgCalories, StringFormat='{0}'}" FontSize="20" FontAttributes="Bold" TextColor="#AD1457" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
 
             <Label Text="Quick Actions" FontSize="18" FontAttributes="Bold"/>
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
@@ -56,19 +63,19 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame BackgroundColor="White" WidthRequest="150" Padding="10">
+                        <Border BackgroundColor="White" WidthRequest="150" Padding="10" StrokeShape="RoundRectangle 8">
                             <VerticalStackLayout>
-                                <Frame Padding="0" CornerRadius="15" HeightRequest="100" HasShadow="False" 
-                                       BackgroundColor="#FFE4B5" BorderColor="Transparent">
-                                    <Image Source="{Binding ImageUrl}" 
+                                <Border Padding="0" StrokeShape="RoundRectangle 15" HeightRequest="100"
+                                        BackgroundColor="#FFE4B5" Stroke="Transparent">
+                                    <Image Source="{Binding ImageUrl}"
                                            Aspect="AspectFill"
                                            HorizontalOptions="Fill" VerticalOptions="Fill"/>
-                                </Frame>
+                                </Border>
                                 <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold" Margin="0,8,0,2"/>
                                 <Label Text="{Binding Description}" FontSize="10" TextColor="Gray" MaxLines="2"/>
                                 <Label Text="{Binding EstimatedCost, StringFormat='${0:F2}'}" FontSize="10" TextColor="#FF6B35"/>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
@@ -80,14 +87,14 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame BackgroundColor="White" Padding="15">
+                        <Border BackgroundColor="White" Padding="15" StrokeShape="RoundRectangle 8">
                             <Grid ColumnDefinitions="80,*,Auto" ColumnSpacing="15">
-                                <Frame Padding="0" CornerRadius="10" WidthRequest="80" HeightRequest="80" Grid.Column="0" 
-                                       HasShadow="False" BackgroundColor="#FFE4B5" BorderColor="Transparent">
-                                    <Image Source="{Binding ImageUrl}" 
+                                <Border Padding="0" StrokeShape="RoundRectangle 10" WidthRequest="80" HeightRequest="80" Grid.Column="0"
+                                        BackgroundColor="#FFE4B5" Stroke="Transparent">
+                                    <Image Source="{Binding ImageUrl}"
                                            Aspect="AspectFill"
                                            HorizontalOptions="Fill" VerticalOptions="Fill"/>
-                                </Frame>
+                                </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
                                     <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>
                                     <Label Text="{Binding Description}" FontSize="12" TextColor="Gray"/>
@@ -95,7 +102,7 @@
                                 </VerticalStackLayout>
                                 <Label Text=">" FontSize="20" TextColor="Gray" Grid.Column="2" VerticalOptions="Center"/>
                             </Grid>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
